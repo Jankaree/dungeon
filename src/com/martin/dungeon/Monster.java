@@ -11,9 +11,21 @@ public class Monster implements ICombat {
 
     private String name;
 
+    public static final String TEXT_RED = "\u001B[31m";
+    public static final String TEXT_BLACK = "\u001B[30m";
+    public static final String TEXT_GREEN = "\u001B[32m";
+    public static final String TEXT_BLUE = "\u001B[34m";
+    public static final String TEXT_RESET = "\u001B[0m";
+    public static final String TEXT_PURPLE = "\u001B[35m";
+    public static final String TEXT_CYAN = "\u001B[36m";
+    public static final String TEXT_YELLOW = "\u001B[33m";
+    public static final String TEXT_WHITE = "\u001B[37m";
+
     public String getName() {
         return name;
     }
+
+
 
     public Monster(int str, int agi, int hp, int lv, String name) {
         this.str = str;
@@ -79,10 +91,10 @@ public class Monster implements ICombat {
 
     @Override
     public void attackplayer(Player player) {
-        System.out.println("the " + this.getName() + " attacks " + player.getName());
+        System.out.println(TEXT_RED + "the " + this.getName() + " attacks " + TEXT_RESET + TEXT_BLUE + player.getName() + TEXT_RESET);
         player.setHp(player.getHp() - this.getStr());
-        System.out.println("the " + this.getName() + " dealt " + this.getStr() + " damage");
-        System.out.println(player.getName() + " current hp: " + player.getHp());
+        System.out.println(TEXT_RED + "the " + this.getName() + " dealt " + this.getStr() + " damage" + TEXT_RESET);
+        System.out.println(TEXT_BLUE + player.getName() + TEXT_RESET + TEXT_GREEN + " current hp: " + player.getHp()+ TEXT_RESET);
     }
 
     @Override

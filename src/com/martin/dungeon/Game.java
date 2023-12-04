@@ -11,6 +11,16 @@ public class Game {
     private HpPot hppot = new HpPot();
     private StrPot strpot = new StrPot();
 
+    public static final String TEXT_RED = "\u001B[31m";
+    public static final String TEXT_BLACK = "\u001B[30m";
+    public static final String TEXT_GREEN = "\u001B[32m";
+    public static final String TEXT_BLUE = "\u001B[34m";
+    public static final String TEXT_RESET = "\u001B[0m";
+    public static final String TEXT_PURPLE = "\u001B[35m";
+    public static final String TEXT_CYAN = "\u001B[36m";
+    public static final String TEXT_YELLOW = "\u001B[33m";
+    public static final String TEXT_WHITE = "\u001B[37m";
+
 
     public void setupGame() {
         Scanner sc = new Scanner(System.in);
@@ -21,15 +31,15 @@ public class Game {
             if (langInt == 1) {
 
                 System.out.println("1 Play Game");
-                System.out.println("2 Language");
-                System.out.println("3 Quit");
+              //  System.out.println("2 Language");
+                System.out.println("2 Quit");
 
                 switch (sc.nextLine()) {
                     case "1" -> startGame();
 
-                    case "2" -> langMeny();
+                    case "2" -> System.exit(0);
 
-                    case "3" -> play = 2;
+
 
                     default -> System.out.println("1,2 or 3");
                 }
@@ -101,7 +111,7 @@ public class Game {
             System.out.println("Hello adventurer!");
             System.out.println("What is your name?");
             player.setName(sc.nextLine());
-            System.out.println("Ah, Hello " + player.getName());
+            System.out.println("Ah, Hello " + TEXT_BLUE + player.getName() + TEXT_RESET);
 
             player.setBaseStats();
             mainMeny(player);
@@ -155,11 +165,13 @@ public class Game {
                 case "2" -> getStatus(player);
 
                 case "3" -> {
+                    System.out.println("===========================");
                     if(player.inventory.size() == 0){
-                        System.out.println("Inventory is empty");
+                        System.out.println("Inventory is " + TEXT_RED + "empty" + TEXT_RESET);
                     }else {
                         inventoryMenu(player);
                     }
+                    System.out.println("===========================");
                 }
 
 
@@ -214,16 +226,28 @@ public class Game {
     public void getStatus(Player player){
         System.out.println("STATS:");
         System.out.println("=================");
-        System.out.println("Name: " +player.getName());
-        System.out.println("Level: " + player.getLv());
-        System.out.println("XP: " +player.getXp());
-        System.out.println("HP: " + player.getHp() + "/" + player.getBaseHp());
-        System.out.println("Str: " + player.getStr());
-        System.out.println("Int: " + player.getIntelect());
-        System.out.println("Agi: " + player.getAgi());
+        System.out.println("Name: " + TEXT_BLUE + player.getName() + TEXT_RESET);
+        System.out.println("Level: " + TEXT_PURPLE + player.getLv() + TEXT_RESET);
+        System.out.println("XP: " + TEXT_PURPLE + player.getXp() + TEXT_RESET);
+        System.out.println("HP: " + TEXT_GREEN + player.getHp() +  "/" +  player.getBaseHp() + TEXT_RESET );
+        System.out.println("Str: " + TEXT_RED + player.getStr() + TEXT_RESET);
+        System.out.println("Agi: " + TEXT_YELLOW + player.getAgi() + TEXT_RESET);
         System.out.println("=================");
 
         mainMeny(player);
+
+    }
+
+    public void getcombatStatus(Player player, Monster monster){
+
+        System.out.println(TEXT_BLUE + player.getName() + TEXT_RESET + " vs " + TEXT_RED + monster.getName() + TEXT_RESET);
+        System.out.println(TEXT_BLUE + player.getName() + TEXT_RESET + " hp: " + TEXT_GREEN + player.getHp() + TEXT_RESET );
+        System.out.println(TEXT_BLUE + player.getName() + TEXT_RESET + " Agi: " + TEXT_YELLOW + player.getAgi() + TEXT_RESET);
+        System.out.println();
+        System.out.println(TEXT_RED + monster.getName() + " hp: " + monster.getHp());
+        System.out.println(monster.getName() + " Agi: " + monster.getAgi() + TEXT_RESET);
+
+
 
     }
 
@@ -232,15 +256,13 @@ public class Game {
         Scanner sc = new Scanner(System.in);
 
         player.checkInventory();
-
+        System.out.println("press 1 to use item");
         switch (sc.nextLine()) {
             case "1" -> player.useItem(0);
+            case "2" -> mainMeny(player);
 
-            case "2" -> player.useItem(1);
 
-            case "3" -> System.out.println();
-
-            default -> System.out.println("1,2 or 3");
+            default -> System.out.println("If you want to use the item press 1 else press 2");
         }
 
 
@@ -255,36 +277,59 @@ public class Game {
         Monster randomMonster = getRandomMonster(player);
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("a Wild " + randomMonster.getName() +  " appeared:");
+        System.out.println(TEXT_RED + "a Wild " + randomMonster.getName() +  " appeared:" + TEXT_RESET );
 
 
 
         while(randomMonster.getHp() > 0 && player.getHp() > 0) {
 
-            System.out.println("Choose what to do!");
-            System.out.println("1 Attack");
-            System.out.println("2 Inventory");
-            System.out.println("3 flee");
 
-            switch (sc.nextLine()) {
-                case "1" -> player.attackmonster(randomMonster);
+            int choise = 1;
+            while (choise == 1) {
+                System.out.println("Choose what to do!");
+                System.out.println("1 Attack");
+                System.out.println("2 Inventory");
+                System.out.println("3 Status");
+                System.out.println("4 flee");
 
-                case "2" -> {
-                    if(player.inventory.size() == 0){
-                        System.out.println("Inventory is empty");
-                    }else {
-                        inventoryMenu(player);
-                    }
-                }
-
-                case "3" -> {
-                    if(player.flee(randomMonster) == 1){
-                        System.out.println("you feld");
-                        mainMeny(player);
+                switch (sc.nextLine()) {
+                    case "1" -> {
+                        player.attackmonster(randomMonster);
+                        choise = 0;
                     }
 
-                }
+                    case "2" -> {
+                        System.out.println("===========================");
+                        if (player.inventory.size() == 0) {
+                            System.out.println("Inventory is " + TEXT_RED + "empty" + TEXT_RESET);
+                        } else {
+                            inventoryMenu(player);
+                        }
+                        System.out.println("===========================");
 
+
+                    }
+
+                    case "4" -> {
+                        System.out.println("===========================");
+                        if (player.flee(randomMonster) == 1) {
+                            System.out.println(TEXT_GREEN + "you feld" + TEXT_RESET);
+                            System.out.println("===========================");
+                            mainMeny(player);
+                        }else{
+                            System.out.println(TEXT_RED + "you failed to flee" + TEXT_RESET);
+                            choise = 0;
+                        }
+                        System.out.println("===========================");
+
+                    }
+                    case "3" -> {
+                        System.out.println("===========================");
+                        getcombatStatus(player, randomMonster);
+                        System.out.println("===========================");
+                    }
+
+                }
             }
             randomMonster.attackplayer(player);
         }
@@ -293,8 +338,8 @@ public class Game {
             System.exit(0);
         }
         Random random = new Random();
-        int randomint = random.nextInt(2);
-        if(randomint == 0) {
+        int randomint = random.nextInt(1);
+        if(randomint == 1) {
             System.out.println("============================");
             System.out.println("You win!");
 
@@ -302,15 +347,41 @@ public class Game {
             System.out.println("reward: 1x Str pot");
             System.out.println("============================");
         }
-        if (randomint == 1){
+        if (randomint == 0){
             System.out.println("============================");
-            System.out.println("You win!");
+            System.out.println( TEXT_GREEN + "You win!");
 
             player.getReward(hppot);
-            System.out.println("reward: 1x hp pot");
+            System.out.println("reward: 1x hp pot" + TEXT_RESET);
             System.out.println("============================");
         }
         player.setXp(26);
+        if(player.getHasleveled() == 1){
+            System.out.println("============================");
+            System.out.println("Set stats!");
+            for (int i = 5; i > 0; i--) {
+                System.out.println("You have " + i + "skill points to use up");
+                System.out.println("Write the stat you would like to increase:");
+
+                switch (sc.nextLine()) {
+                    case "hp" ->{
+                        player.setBaseHp(1);
+                        System.out.println(TEXT_GREEN + "new hp = " + player.getBaseHp() + TEXT_RESET);
+                    }
+                    case "str" ->{
+                        player.setStr(1);
+                        System.out.println(TEXT_RED + "new str = " + player.getStr() + TEXT_RESET);
+                    }
+                    case "agi" ->{
+                        player.setAgi(1);
+                        System.out.println(TEXT_YELLOW + "new agi = " + player.getAgi() + TEXT_RESET);
+                    }
+                    default -> System.out.println("Please write hp,str or agi");
+                }
+            }
+            player.setHasleveled(0);
+
+        }
     }
 
     public Monster getRandomMonster(Player player){
@@ -326,13 +397,17 @@ public class Game {
         monsterList.add(spider);
         monsterList.add(dragon);
 
-        int randomint = random.nextInt(3);
+        int randomint_1 = random.nextInt(1);
+        int randomint_2 = random.nextInt(2);
+        int randomint_3 = random.nextInt(3);
+        if (player.getLv() == 1){
+            return monsterList.get(randomint_1);
+        }
+        if (player.getLv() == 2){
+            return monsterList.get(randomint_2);
+        }else
 
-        return monsterList.get(randomint);
-
-
-
-
+        return monsterList.get(randomint_3);
 
     }
 

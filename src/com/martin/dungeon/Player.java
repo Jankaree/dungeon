@@ -1,6 +1,9 @@
 package com.martin.dungeon;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Player implements ICombat{
@@ -16,6 +19,26 @@ public class Player implements ICombat{
     private int lv;
     private double dmg;
     private int baseHp;
+
+    private int hasleveled;
+
+    public static final String TEXT_RED = "\u001B[31m";
+    public static final String TEXT_BLACK = "\u001B[30m";
+    public static final String TEXT_GREEN = "\u001B[32m";
+    public static final String TEXT_BLUE = "\u001B[34m";
+    public static final String TEXT_RESET = "\u001B[0m";
+    public static final String TEXT_PURPLE = "\u001B[35m";
+    public static final String TEXT_CYAN = "\u001B[36m";
+    public static final String TEXT_YELLOW = "\u001B[33m";
+    public static final String TEXT_WHITE = "\u001B[37m";
+
+    public int getHasleveled() {
+        return hasleveled;
+    }
+
+    public void setHasleveled(int hasleveled) {
+        this.hasleveled = hasleveled;
+    }
 
     public void setBaseStats(){
         this.str = 1;
@@ -33,7 +56,7 @@ public class Player implements ICombat{
     }
 
     public void setBaseHp(int baseHp) {
-        this.baseHp = baseHp;
+        this.baseHp += baseHp;
     }
 
     public Player(List<IItems> inventory) {
@@ -45,7 +68,7 @@ public class Player implements ICombat{
     }
 
     public void setStr(int str) {
-        this.str = str;
+        this.str += str;
     }
 
     public void setIntelect(int intelect) {
@@ -53,12 +76,13 @@ public class Player implements ICombat{
     }
 
     public void setAgi(int agi) {
-        this.agi = agi;
+        this.agi += agi;
     }
 
 
     public void setLv(int lv) {
         this.lv += lv;
+        setHasleveled(1);
     }
 
     public void setHp(int hp) {
@@ -66,14 +90,14 @@ public class Player implements ICombat{
     }
 
     public void setXp(int xp) {
-        System.out.println("you gained " + xp);
+        System.out.println( TEXT_PURPLE + "you gained " + xp + " xp" + TEXT_RESET);
         this.xp += xp;
 
         if(this.xp >= 100){
             System.out.println("=================");
-            System.out.println("level up!");
+            System.out.println( TEXT_PURPLE +"level up!");
             setLv(1);
-            System.out.println("You are now level: " + getLv());
+            System.out.println("You are now level: " + getLv() + TEXT_RESET);
             System.out.println("=================");
 
             this.xp = this.xp % 100;
@@ -147,7 +171,7 @@ public class Player implements ICombat{
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Would you like to use your: " + this.inventory.get(i).name());
-
+        System.out.println("Press 'y' or 'n'");
         switch (sc.nextLine()) {
             case "y" -> this.inventory.get(i).use(this);
 
@@ -167,10 +191,10 @@ public class Player implements ICombat{
     @Override
     public void attackmonster(Monster target) {
 
-        System.out.println("you attack the " + target.getName());
+        System.out.println(TEXT_GREEN + "you attack the " + TEXT_RESET + TEXT_RED + target.getName() + TEXT_RESET);
         target.setHp(target.getHp() - this.getStr());
-        System.out.println("you dealt " + this.getStr() + " damage");
-        System.out.println(target.getName() + " current hp: " + target.getHp());
+        System.out.println(TEXT_GREEN + "you dealt "  + this.getStr() + " damage" + TEXT_RESET);
+        System.out.println(TEXT_RED + target.getName()  + " current hp: " + target.getHp() + TEXT_RESET);
 
     }
 
@@ -181,14 +205,16 @@ public class Player implements ICombat{
 
     @Override
     public int flee(Monster target) {
+        Random rand = new Random();
+
         if(this.agi > target.getAgi()){
             return 1;
         }
         if(this.agi < target.getAgi()){
-            return -1;
+            return rand.nextInt(4);
         }
         if(this.agi == target.getAgi()){
-            return 0;
+            return rand.nextInt(2);
         }
         return 0;
     }

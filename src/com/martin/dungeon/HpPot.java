@@ -15,6 +15,7 @@ public class HpPot implements IItems{
     @Override
     public void use(Player player) {
         player.setHp(player.getBaseHp());
+        System.out.println("hp healed");
         removeCapacity();
 
         if(this.capacity == 0){
