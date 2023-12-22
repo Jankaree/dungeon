@@ -20,6 +20,8 @@ public class Player implements ICombat{
     private double dmg;
     private int baseHp;
 
+    private int id;
+
     private int hasleveled;
 
     public static final String TEXT_RED = "\u001B[31m";
@@ -49,6 +51,14 @@ public class Player implements ICombat{
         this.lv = 1;
         this.baseHp = 10;
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getBaseHp() {
@@ -102,6 +112,9 @@ public class Player implements ICombat{
 
             this.xp = this.xp % 100;
         }
+    }
+    public void setXp2(int xp){
+        this.xp = xp;
     }
 
     public void setPv(int lv) {
@@ -217,6 +230,11 @@ public class Player implements ICombat{
             return rand.nextInt(2);
         }
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" + "PlayerID=" + id + ", PlayerName='" + name + '\'' + '\'' + '}';
     }
 
     @Override

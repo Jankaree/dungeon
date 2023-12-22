@@ -11,6 +11,8 @@ public class Game {
     private HpPot hppot = new HpPot();
     private StrPot strpot = new StrPot();
 
+    private DBC dbc;
+
     public static final String TEXT_RED = "\u001B[31m";
     public static final String TEXT_BLACK = "\u001B[30m";
     public static final String TEXT_GREEN = "\u001B[32m";
@@ -21,8 +23,14 @@ public class Game {
     public static final String TEXT_YELLOW = "\u001B[33m";
     public static final String TEXT_WHITE = "\u001B[37m";
 
+    public Game(DBC dbc) {
+        this.dbc = dbc;
+    }
 
     public void setupGame() {
+
+        dbc.open();
+
         Scanner sc = new Scanner(System.in);
 
         int play = 1;
@@ -30,14 +38,16 @@ public class Game {
 
             if (langInt == 1) {
 
-                System.out.println("1 Play Game");
-              //  System.out.println("2 Language");
-                System.out.println("2 Quit");
+                System.out.println("1 Continue");
+                System.out.println("2 New game");
+                System.out.println("3 Quit");
 
                 switch (sc.nextLine()) {
-                    case "1" -> startGame();
+                    case "1" -> charSelect();
 
-                    case "2" -> System.exit(0);
+                    case "2" -> startGame();
+
+                    case "3" -> System.exit(0);
 
 
 
@@ -83,6 +93,19 @@ public class Game {
         }
     }
 
+    public void charSelect(){
+        ArrayList<Player> players = dbc.listOfPlayers();
+
+        for (Player c: players) {
+            System.out.println(c.toString());
+        }
+
+        Scanner sc = new Scanner(System.in);
+        int choise = sc.nextInt();
+
+        mainMeny(players.get(choise -1));
+    }
+
     public void langMeny(){
 
         Scanner sc = new Scanner(System.in);
@@ -114,6 +137,10 @@ public class Game {
             System.out.println("Ah, Hello " + TEXT_BLUE + player.getName() + TEXT_RESET);
 
             player.setBaseStats();
+            dbc.createPlayer(player);
+            player.setId(dbc.idFinder());
+
+
             mainMeny(player);
 
 
@@ -147,6 +174,8 @@ public class Game {
     }
 
     public void mainMeny(Player player){
+
+        player.setHasleveled(0);
 
         Scanner sc = new Scanner(System.in);
        // player.addToInventory(hppot);
@@ -232,6 +261,7 @@ public class Game {
         System.out.println("HP: " + TEXT_GREEN + player.getHp() +  "/" +  player.getBaseHp() + TEXT_RESET );
         System.out.println("Str: " + TEXT_RED + player.getStr() + TEXT_RESET);
         System.out.println("Agi: " + TEXT_YELLOW + player.getAgi() + TEXT_RESET);
+        System.out.println("ID: " + player.getId());
         System.out.println("=================");
 
         mainMeny(player);
@@ -335,6 +365,7 @@ public class Game {
         }
         if(player.getHp() <= 0){
             System.out.println("You Died");
+            dbc.updatePlayerDead(0, player.getId());
             System.exit(0);
         }
         Random random = new Random();
@@ -381,7 +412,9 @@ public class Game {
             }
             player.setHasleveled(0);
 
+
         }
+        dbc.updatePlayerStats(player.getStr(),player.getAgi(), player.getHp(), player.getXp(), player.getLv(), player.getBaseHp(), player.getId());
     }
 
     public Monster getRandomMonster(Player player){

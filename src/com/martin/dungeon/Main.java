@@ -6,8 +6,16 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        Game game = new Game();
+        DBC dbc = new DBC();
+
+
+        Game game = new Game(dbc);
         game.setupGame();
+
+
+
+       // dbc.open();
+       // System.out.println(dbc.idFinder());
 /*
         List<IItems> invent = new ArrayList<>(10);
 
